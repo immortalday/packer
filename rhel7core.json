@@ -34,8 +34,8 @@
             "UPDATE=true"
           ],
           "scripts": [
-          	"rhel7sc/repo77.sh",
-            "rhel7sc/cleanup.sh"
+          	"script/repo77.sh",
+            "script/cleanup.sh"
           ]
       }
   ],
