@@ -1,0 +1,48 @@
+{
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "boot_command": [
+         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart-rhel77core.cfg<enter>"
+      ],
+      "communicator": "ssh",
+      "guest_os_type": "rhel7-64",
+      "disk_size": "61440",
+      "http_directory": "http",
+      "iso_url": "/path/to/iso.iso",
+      "iso_checksum_type": "none",
+      "ssh_username":"<user_name>",
+      "ssh_password":"<password>",
+      "ssh_wait_timeout": "1600s",
+      "shutdown_command": "shutdown -P now",
+      "version": 14,
+      "vm_name": "rhel77core",
+      "network_adapter_type": "VMXNET3",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "1024",
+        "numvcpus": "2"
+      }
+    }
+  ],
+  "provisioners": [
+      {
+          "type": "shell",
+          "expect_disconnect": true,
+          "execute_command": "sudo UPDATE=true bash '{{ .Path  }}'",
+          "environment_vars": [
+            "UPDATE=true"
+          ],
+          "scripts": [
+          	"rhel7sc/repo77.sh",
+            "rhel7sc/cleanup.sh"
+          ]
+      }
+  ],
+  "post-processors": [
+  	{
+    "type": "shell-local",
+    "inline": ["ovftool output-vmware-iso/rhel77core.vmx /path/to/out/ova.ova"]
+  	}
+  ]
+}
